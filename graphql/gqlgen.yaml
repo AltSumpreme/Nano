@@ -1,0 +1,9 @@
+schema: schema.graphql
+
+
+models:
+    Account:
+        model: github.com/AltSumpreme/Nano.git/graphql.Account
+        fields: 
+          post: 
+             resolver: true

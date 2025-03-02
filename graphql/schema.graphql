@@ -1,0 +1,66 @@
+scalar Time
+
+type Account {
+
+    id :ID!
+    name : String!
+    email :String!
+    posts : [Post!]!
+}
+
+type AuthPayload{
+    token : String!
+    user : Account!
+}
+
+type Post{
+
+    id : ID!
+    title : String!
+    content : String!
+    author : Account!
+    createdAt : Time!
+    
+}
+
+type SearchResult{
+    id : ID!
+    title : String!
+    snippet : String!
+    createdAt : Time!
+}
+
+input PaginationInput{
+    skip : Int
+    take : Int
+}
+
+
+input AccountInput{
+    name : String!
+    email : String!
+    password : String!
+}
+
+input PostInput{
+    title : String!
+    content : String!
+}
+
+input SearchInput{
+    query : String!
+    pagination: PaginationInput
+}
+
+type Mutation {
+    createAccount(account: AccountInput!) : AuthPayload!
+    createPost(post: PostInput!) : Post!
+}
+
+
+type Query{
+    accounts(pagination: PaginationInput) : [Account!]!
+    posts(pagination: PaginationInput,query:String) : [Post!]!
+    search(search : SearchInput!): [SearchResult!]!
+}
+
