@@ -18,7 +18,7 @@ type postgresRepository struct {
 	db *sql.DB
 }
 
-func NewPostgresRepository(url string) (Repository, error) {
+func NewPostgresRepository(url string) (*postgresRepository, error) {
 	db, err := sql.Open("postgres", url)
 	if err != nil {
 		return nil, err
@@ -29,7 +29,7 @@ func NewPostgresRepository(url string) (Repository, error) {
 		return nil, err
 	}
 
-	return &postgresRespository(db), nil
+	return &postgresRepository{db}, nil
 
 }
 
@@ -42,15 +42,16 @@ func (r *postgresRepository) Ping() error {
 }
 
 func (r *postgresRepository) PutAccount(ctx context.Context, a Account) error {
-	_, err = r.db.ExecContext(ctx, "INSERT INTO accounts(id,name) VALUES($1,$2)", a.ID, a.Name)
+	_, err := r.db.ExecContext(ctx, "INSERT INTO accounts(name) VALUES($1) RETURNING id", a.Name)
 	return err
 
 }
 
 func (r *postgresRepository) GetAccountByID(ctx context.Context, id string) (*Account, error) {
-	_, err = r.db.QueryRowContext(ctx, "SELECT id,name FROM accounts WHERE  id=$!", id)
-	a := &Account()
-	if err = row.Scan(&a.ID, &a.Name); err != nil {
+	row := r.db.QueryRowContext(ctx, "SELECT id,name FROM accounts WHERE  id=$1", id)
+	a := &Account{}
+	err := row.Scan(&a.ID, &a.Name)
+	if err != nil {
 		return nil, err
 
 	}
@@ -58,7 +59,7 @@ func (r *postgresRepository) GetAccountByID(ctx context.Context, id string) (*Ac
 }
 
 func (r *postgresRepository) ListAccounts(ctx context.Context, skip uint64, take uint64) ([]Account, error) {
-	_, err = r.db.QueryRowContext(ctx, "SELECT id,name FROM accounts ORDER BY id OFFSET $1 LIMIT $2", skip, take)
+	rows, err := r.db.QueryContext(ctx, "SELECT id,name FROM accounts ORDER BY id OFFSET $1 LIMIT $2", skip, take)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +70,7 @@ func (r *postgresRepository) ListAccounts(ctx context.Context, skip uint64, take
 	for rows.Next() {
 		a := &Account{}
 		if err = rows.Scan(&a.ID, &a.Name); err == nil {
-			accounts = append(accounts)
+			accounts = append(accounts, *a)
 		}
 	}
 

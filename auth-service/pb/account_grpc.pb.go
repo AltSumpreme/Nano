@@ -4,7 +4,7 @@
 // - protoc             v5.29.2
 // source: account.proto
 
-package pb
+package __
 
 import (
 	context "context"
