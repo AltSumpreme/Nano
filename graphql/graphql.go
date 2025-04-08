@@ -1,15 +1,18 @@
 package main
 
-import "github.com/99designs/gqlgen/graphql"
+import (
+	"github.com/99designs/gqlgen/graphql"
+	"github.com/AltSumpreme/Nano/auth"
+)
 
 type Server struct {
-	accountClient *account.client
-	postClient    *post.client
-	searchClient  *search.client
+	accountClient *auth.Client
+	postClient    *post.Client
+	searchClient  *search.Client
 }
 
 func NewGraphQLServer(accountUrl, postUrl, searchUrl string) (*Server, error) {
-	accountClient, err := account.NewClient(accountUrl)
+	accountClient, err := auth.NewClient(accountUrl)
 
 	if err != nil {
 		return nil, err
