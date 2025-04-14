@@ -1,26 +1,27 @@
-package auth_service
+package auth
 
 import (
 	"context"
 	"fmt"
 	"net"
 
-	"github.com/AltSumpreme/Nano.git/auth-service/pb/github.com/AltSumpreme/Nano/account/pb"
+	"github.com/AltSumpreme/Nano/auth/pb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
 
 type grpcServer struct {
+	pb.UnimplementedAccountServiceServer
 	service Service
 }
 
-func listenGrpc(service Service, port int) error {
+func ListenGrpc(service Service, port int) error {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
 		return err
 	}
 	server := grpc.NewServer()
-	pb.RegisterAccountServiceServer(server, &grpcServer{service})
+	pb.RegisterAccountServiceServer(server, &grpcServer{service: service})
 	reflection.Register(server)
 	return server.Serve(listener)
 }

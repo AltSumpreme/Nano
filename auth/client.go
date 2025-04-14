@@ -1,9 +1,9 @@
-package auth_service
+package auth
 
 import (
 	"context"
 
-	"github.com/AltSumpreme/Nano.git/auth-service/pb/github.com/AltSumpreme/Nano/account/pb"
+	"github.com/AltSumpreme/Nano/auth/pb"
 	"google.golang.org/grpc"
 )
 
@@ -20,7 +20,7 @@ func NewClient(url string) (*Client, error) {
 	}
 
 	client := pb.NewAccountServiceClient(conn)
-	return &Client(conn, client), nil
+	return &Client{conn: conn, service: client}, nil
 
 }
 
@@ -52,7 +52,7 @@ func (c *Client) GetAccounts(ctx context.Context, skip uint64, take uint64) ([]A
 	}
 	accounts := []Account{}
 	for _, account := range r.Accounts {
-		accounts = append(accounts, Account{ID: account.Id, Name: account.name})
+		accounts = append(accounts, Account{ID: account.Id, Name: account.Name})
 	}
-
+	return accounts, nil
 }

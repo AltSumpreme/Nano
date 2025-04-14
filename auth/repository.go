@@ -1,4 +1,4 @@
-package auth_service
+package auth
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 type Repository interface {
 	Close()
 	PutAccount(ctx context.Context, account Account) error
-	GetAccountByID(ctx context.Context, id string) error
+	GetAccountByID(ctx context.Context, id string) (*Account, error)
 	ListAccounts(ctx context.Context, skip uint64, take uint64) ([]Account, error)
 }
 

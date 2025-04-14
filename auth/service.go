@@ -1,4 +1,4 @@
-package auth_service
+package auth
 
 import (
 	"context"
@@ -18,11 +18,11 @@ type Account struct {
 }
 
 type accountService struct {
-	repo postgresRepository
+	repo Repository
 }
 
-func newaccountService(r Repository) Service {
-	return &accountService{r}
+func NewService(r Repository) Service {
+	return &accountService{repo: r}
 }
 
 func (s *accountService) PostAccount(ctx context.Context, name string) (*Account, error) {

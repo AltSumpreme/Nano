@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/AltSumpreme/Nano/auth"
+	"github.com/AltSumpreme/Nano/search"
 )
 
 type Server struct {

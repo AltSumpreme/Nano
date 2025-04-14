@@ -4,7 +4,9 @@ import (
 	"log"
 	"time"
 
+	auth "github.com/AltSumpreme/Nano/auth"
 	"github.com/kelseyhightower/envconfig"
+	"github.com/tinrab/retry"
 )
 
 type Config struct {
@@ -17,18 +19,18 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	var r account.Repository
-	retry.ForeverSleep(2*time.Second, func(_int) (err error) {
-		r, err = account.NewPostgresRepository(cfg.DatabaseURL)
+
+	var r auth.Repository
+	retry.ForeverSleep(2*time.Second, func(_ int) (err error) {
+		r, err = auth.NewPostgresRepository(cfg.DatabaseURL)
 		if err != nil {
 			log.Println(err)
-
 		}
 		return
 	})
 	defer r.Close()
-	log.Println("Listening on port 8080")
 
-	s := account.NewService(r)
-	log.Fatal(account.ListenGRPC(s, 8080))
+	log.Println("Listening on port 8080...")
+	s := auth.NewService(r)
+	log.Fatal(auth.ListenGrpc(s, 8080))
 }
