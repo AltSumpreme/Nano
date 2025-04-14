@@ -53,7 +53,7 @@ func (s *Server) Query() QueryResolver {
 	}
 }
 
-func (s *Server) Account() QueryResolver {
+func (s *Server) Account() AccountResolver {
 	return &queryResolver{
 		server: s,
 	}
