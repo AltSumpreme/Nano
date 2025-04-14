@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package ="./";
+
+message Post{
+    string id = 1;
+    string name =2;
+    string description =3;
+}
+
+message PostBlogRequest{
+     string name = 1;
+     string description = 2;
+}
+
+message PostBlogResponse{
+    Post post = 1;
+     
+} 
+
+message GetPostRequest{
+      string id = 1;
+}
+
+message GetPostResponse{
+    Post post = 1;
+}
+message GetPostsRequest{ 
+    uint64 skip =1;
+    uint64 take =2;
+    repeated string ids = 3;
+    string query = 4;
+}
+
+message GetPostsResponse{
+    repeated Post posts = 1;
+}
+
+service SearchService{
+    rpc PostBlog(PostBlogRequest) returns (PostBlogResponse);
+    rpc GetPost(GetPostRequest) returns (GetPostResponse);
+    rpc GetPosts(GetPostsRequest) returns (GetPostsResponse);
+}
+
